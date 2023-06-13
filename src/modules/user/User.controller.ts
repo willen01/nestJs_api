@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from "./useCase/create-user.usecase";
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, HttpException, HttpStatus } from "@nestjs/common";
 import { CreateUserDTO } from "./dto/user.dto";
 
 @Controller("/users")
@@ -8,6 +8,10 @@ export class UserController {
 
   @Post()
   async create(@Body() data: CreateUserDTO) {
-    return await this.createUserUseCase.execute(data);
+    try {
+      return await this.createUserUseCase.execute(data);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }
